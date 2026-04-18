@@ -5,6 +5,7 @@ class RegisterRequest(BaseModel):
     email: str
     password: str
     nickname: str | None = None
+    invite_code: str | None = Field(default=None, validation_alias="inviteCode")
 
 
 class LoginRequest(BaseModel):

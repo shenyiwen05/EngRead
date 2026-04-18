@@ -7,7 +7,7 @@ type AuthStore = {
   user: User | null
   isAuthenticated: boolean
   login: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>
-  register: (email: string, nickname: string, password: string) => Promise<{ ok: boolean; error?: string }>
+  register: (email: string, nickname: string, password: string, inviteCode: string) => Promise<{ ok: boolean; error?: string }>
   logout: () => void
 }
 
@@ -46,9 +46,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
       return { ok: false, error: error instanceof Error ? error.message : '邮箱或密码错误' }
     }
   },
-  register: async (email, nickname, password) => {
+  register: async (email, nickname, password, inviteCode) => {
     try {
-      const response = await authService.register(email, nickname, password)
+      const response = await authService.register(email, nickname, password, inviteCode)
       saveAuth(response.accessToken, response.user)
       set({ token: response.accessToken, user: response.user, isAuthenticated: true })
       return { ok: true }

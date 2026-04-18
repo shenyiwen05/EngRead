@@ -8,6 +8,7 @@ export function RegisterPage() {
   const [nickname, setNickname] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [inviteCode, setInviteCode] = useState('')
   const [error, setError] = useState('')
   const register = useAuthStore((state) => state.register)
   const navigate = useNavigate()
@@ -29,7 +30,7 @@ export function RegisterPage() {
       return
     }
 
-    const result = await register(email, nickname || email.split('@')[0], password)
+    const result = await register(email, nickname || email.split('@')[0], password, inviteCode)
     if (!result.ok) {
       setError(result.error ?? '注册失败')
       return
@@ -57,6 +58,10 @@ export function RegisterPage() {
         <label className="mt-4 block text-sm text-gray-700">
           确认密码
           <input className="mt-2 w-full rounded-md border border-gray-200 px-3 py-2 text-gray-900 outline-none transition-colors focus:border-gray-400" type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} />
+        </label>
+        <label className="mt-4 block text-sm text-gray-700">
+          邀请码
+          <input className="mt-2 w-full rounded-md border border-gray-200 px-3 py-2 text-gray-900 outline-none transition-colors focus:border-gray-400" value={inviteCode} onChange={(event) => setInviteCode(event.target.value)} />
         </label>
         {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
         <button className="mt-5 w-full rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700" type="submit">

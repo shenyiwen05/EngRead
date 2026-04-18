@@ -1,10 +1,13 @@
 from fastapi import HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.models.user import User
 from app.schemas.auth import LoginRequest, RegisterRequest
 from app.utils.security import create_access_token, hash_password, verify_password
+
+PRIVATE_BETA_INVITE_CODE = "sywww"
+PRIVATE_BETA_INVITE_LIMIT = 5
 
 
 def validate_email(email: str) -> None:
@@ -17,9 +20,19 @@ def validate_password(password: str) -> None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="密码长度不足")
 
 
+def validate_invite_code(db: Session, invite_code: str | None) -> None:
+    if invite_code != PRIVATE_BETA_INVITE_CODE:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="邀请码无效")
+
+    used_count = db.scalar(select(func.count()).select_from(User).where(User.invite_code == PRIVATE_BETA_INVITE_CODE))
+    if used_count >= PRIVATE_BETA_INVITE_LIMIT:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="邀请码已用完")
+
+
 def register_user(db: Session, payload: RegisterRequest) -> tuple[str, User]:
     validate_email(payload.email)
     validate_password(payload.password)
+    validate_invite_code(db, payload.invite_code)
 
     existing = db.scalar(select(User).where(User.email == payload.email))
     if existing:
@@ -29,6 +42,7 @@ def register_user(db: Session, payload: RegisterRequest) -> tuple[str, User]:
         email=payload.email,
         nickname=payload.nickname or payload.email.split("@")[0],
         password_hash=hash_password(payload.password),
+        invite_code=PRIVATE_BETA_INVITE_CODE,
     )
     db.add(user)
     db.commit()

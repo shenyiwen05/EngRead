@@ -9,7 +9,7 @@ from app.models.favorite import Favorite
 def register_and_login(client: TestClient, email: str) -> str:
     response = client.post(
         "/api/auth/register",
-        json={"email": email, "password": "password123", "nickname": email.split("@")[0]},
+        json={"email": email, "password": "password123", "nickname": email.split("@")[0], "inviteCode": "sywww"},
     )
     return response.json()["accessToken"]
 
