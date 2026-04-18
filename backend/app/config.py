@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     ai_api_key: str = ""
     ai_model_name: str = ""
     ai_max_tokens: int = 8192
+    ai_timeout_seconds: float = 300
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

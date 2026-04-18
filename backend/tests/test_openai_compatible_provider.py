@@ -73,6 +73,14 @@ def test_provider_disables_qwen_thinking_and_allows_larger_output_tokens(monkeyp
     assert client.request_json["response_format"] == {"type": "json_object"}
 
 
+def test_provider_uses_configured_read_timeout(monkeypatch):
+    monkeypatch.setattr("app.ai.providers.openai_compatible.settings.ai_timeout_seconds", 420)
+
+    provider = SmokeProvider(api_key="secret", model_name="qwen3.6-plus")
+
+    assert provider.client.timeout.read == 420
+
+
 def test_provider_reports_truncated_model_output_before_json_parse():
     client = FakeClient(finish_reason="length")
     provider = SmokeProvider(api_key="secret", model_name="qwen3.6-plus", client=client)

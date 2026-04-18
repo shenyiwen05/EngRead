@@ -13,7 +13,8 @@ class OpenAICompatibleProvider:
     def __init__(self, api_key: str, model_name: str, client: httpx.Client | None = None):
         self.api_key = api_key
         self.model_name = model_name
-        self.client = client or httpx.Client(timeout=90)
+        timeout = httpx.Timeout(settings.ai_timeout_seconds, connect=15.0)
+        self.client = client or httpx.Client(timeout=timeout)
 
     def analyze_article(self, raw_text: str, title: str | None = None) -> dict[str, Any]:
         response = self.client.post(
