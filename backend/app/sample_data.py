@@ -1,0 +1,154 @@
+from typing import Any
+
+
+def build_sample_article(article_id: str) -> dict[str, Any]:
+    return {
+        "id": article_id,
+        "ownerId": None,
+        "title": "Why Small Firms Feel the Squeeze",
+        "sourceType": "sample",
+        "topic": "Business",
+        "difficulty": "B2",
+        "estimatedReadingMinutes": 4,
+        "createdAt": "2026-04-17T00:00:00Z",
+        "updatedAt": "2026-04-17T00:00:00Z",
+        "paragraphs": [
+            {
+                "id": "paragraph_1",
+                "order": 1,
+                "originalText": (
+                    "After a modest rebound in demand, small exporters began to come under pressure as "
+                    "borrowing costs stayed stubbornly high. Although consumer spending remained resilient, "
+                    "smaller manufacturers began to come under pressure as borrowing costs stayed stubbornly high."
+                ),
+                "sentences": [
+                    {
+                        "id": "sentence_1",
+                        "order": 1,
+                        "text": (
+                            "After a modest rebound in demand, small exporters began to come under pressure as "
+                            "borrowing costs stayed stubbornly high."
+                        ),
+                        "translation": "需求出现有限反弹后，随着借贷成本顽固地保持高位，小型出口商开始承压。",
+                        "isLongSentence": False,
+                        "tokens": [
+                            {"id": "token_after", "text": "After", "start": 0, "end": 5, "isClickable": False},
+                            {
+                                "id": "token_modest",
+                                "text": "modest",
+                                "lemma": "modest",
+                                "start": 8,
+                                "end": 14,
+                                "isClickable": True,
+                                "isFamiliarButShifted": True,
+                                "explanation": {
+                                    "word": "modest",
+                                    "lemma": "modest",
+                                    "meaningInSentence": "有限的、不大的",
+                                    "commonMeanings": ["谦虚的", "适度的"],
+                                    "isFamiliarButShifted": True,
+                                    "note": "这里不是夸人谦虚，而是描述反弹幅度不大。",
+                                    "collocations": ["a modest increase", "modest growth"],
+                                },
+                            },
+                            {"id": "token_rebound", "text": "rebound", "start": 15, "end": 22, "isClickable": True},
+                            {"id": "token_demand", "text": "demand", "start": 26, "end": 32, "isClickable": False},
+                            {"id": "token_small", "text": "small", "start": 34, "end": 39, "isClickable": False},
+                            {"id": "token_exporters", "text": "exporters", "start": 40, "end": 49, "isClickable": False},
+                            {"id": "token_began", "text": "began", "start": 50, "end": 55, "isClickable": False},
+                            {"id": "token_come", "text": "come", "start": 59, "end": 63, "phraseId": "phrase_pressure", "isClickable": True},
+                            {"id": "token_under", "text": "under", "start": 64, "end": 69, "phraseId": "phrase_pressure", "isClickable": True},
+                            {"id": "token_pressure", "text": "pressure", "start": 70, "end": 78, "phraseId": "phrase_pressure", "isClickable": True},
+                            {"id": "token_as", "text": "as", "start": 79, "end": 81, "isClickable": False},
+                            {"id": "token_borrowing", "text": "borrowing", "start": 82, "end": 91, "isClickable": False},
+                            {"id": "token_costs", "text": "costs", "start": 92, "end": 97, "isClickable": False},
+                            {"id": "token_stayed", "text": "stayed", "start": 98, "end": 104, "isClickable": False},
+                            {"id": "token_stubbornly", "text": "stubbornly", "start": 105, "end": 115, "phraseId": "phrase_high", "isClickable": True},
+                            {"id": "token_high", "text": "high", "start": 116, "end": 120, "phraseId": "phrase_high", "isClickable": True},
+                        ],
+                        "phrases": [
+                            {
+                                "id": "phrase_pressure",
+                                "text": "come under pressure",
+                                "start": 59,
+                                "end": 78,
+                                "type": "academic_expression",
+                                "meaningInSentence": "开始承压、面临压力",
+                                "commonMeaning": "受到压力",
+                                "whyImportant": "三个词作为整体表达处境恶化，不能逐词理解成“来到压力下面”。",
+                                "collocations": ["come under pressure from lenders", "come under pressure to cut prices"],
+                                "sentenceTranslation": "小型出口商开始承压。",
+                            },
+                            {
+                                "id": "phrase_high",
+                                "text": "stubbornly high",
+                                "start": 105,
+                                "end": 120,
+                                "type": "collocation",
+                                "meaningInSentence": "顽固地保持高位",
+                                "commonMeaning": "持续偏高",
+                                "whyImportant": "常用于通胀、利率、成本等难以下降的指标。",
+                                "collocations": ["stubbornly high inflation", "stubbornly high prices"],
+                            },
+                        ],
+                    },
+                    {
+                        "id": "sentence_2",
+                        "order": 2,
+                        "text": (
+                            "Although consumer spending remained resilient, smaller manufacturers began to "
+                            "come under pressure as borrowing costs stayed stubbornly high."
+                        ),
+                        "translation": "尽管消费者支出仍有韧性，但随着借贷成本顽固地保持高位，小型制造商开始承压。",
+                        "isLongSentence": True,
+                        "breakdown": {
+                            "mainClause": "smaller manufacturers began to come under pressure",
+                            "modifiers": ["Although consumer spending remained resilient", "as borrowing costs stayed stubbornly high"],
+                            "logic": "让步背景加原因说明：消费有韧性，但融资成本仍让企业承压。",
+                            "explanation": "先抓主干“制造商开始承压”，再把 although 和 as 引导的背景与原因补回去。",
+                        },
+                        "tokens": [
+                            {"id": "token_although_2", "text": "Although", "start": 0, "end": 8, "isClickable": False},
+                            {"id": "token_consumer_2", "text": "consumer", "start": 9, "end": 17, "isClickable": False},
+                            {"id": "token_spending_2", "text": "spending", "start": 18, "end": 26, "isClickable": False},
+                            {"id": "token_remained_2", "text": "remained", "start": 27, "end": 35, "isClickable": False},
+                            {"id": "token_resilient_2", "text": "resilient", "start": 36, "end": 45, "isClickable": True},
+                            {"id": "token_smaller_2", "text": "smaller", "start": 47, "end": 54, "isClickable": False},
+                            {"id": "token_manufacturers_2", "text": "manufacturers", "start": 55, "end": 68, "isClickable": False},
+                            {"id": "token_began_2", "text": "began", "start": 69, "end": 74, "isClickable": False},
+                            {"id": "token_come_2", "text": "come", "start": 78, "end": 82, "phraseId": "phrase_pressure_2", "isClickable": True},
+                            {"id": "token_under_2", "text": "under", "start": 83, "end": 88, "phraseId": "phrase_pressure_2", "isClickable": True},
+                            {"id": "token_pressure_2", "text": "pressure", "start": 89, "end": 97, "phraseId": "phrase_pressure_2", "isClickable": True},
+                            {"id": "token_as_2", "text": "as", "start": 98, "end": 100, "isClickable": False},
+                            {"id": "token_borrowing_2", "text": "borrowing", "start": 101, "end": 110, "isClickable": False},
+                            {"id": "token_costs_2", "text": "costs", "start": 111, "end": 116, "isClickable": False},
+                            {"id": "token_stayed_2", "text": "stayed", "start": 117, "end": 123, "isClickable": False},
+                            {"id": "token_stubbornly_2", "text": "stubbornly", "start": 124, "end": 134, "phraseId": "phrase_high_2", "isClickable": True},
+                            {"id": "token_high_2", "text": "high", "start": 135, "end": 139, "phraseId": "phrase_high_2", "isClickable": True},
+                        ],
+                        "phrases": [
+                            {"id": "phrase_pressure_2", "text": "come under pressure", "start": 78, "end": 97, "type": "academic_expression", "meaningInSentence": "开始承压", "commonMeaning": "受到压力", "whyImportant": "表达企业经营处境受到挤压。"},
+                            {"id": "phrase_high_2", "text": "stubbornly high", "start": 124, "end": 139, "type": "collocation", "meaningInSentence": "顽固地保持高位", "commonMeaning": "一直偏高", "whyImportant": "说明成本没有明显缓解。"},
+                        ],
+                    },
+                ],
+            }
+        ],
+        "review": {
+            "keyPhrases": [
+                {"id": "phrase_pressure", "text": "come under pressure", "start": 59, "end": 78, "type": "academic_expression", "meaningInSentence": "开始承压、面临压力", "commonMeaning": "受到压力", "whyImportant": "阅读商业报道时很常见。"},
+                {"id": "phrase_high", "text": "stubbornly high", "start": 105, "end": 120, "type": "collocation", "meaningInSentence": "顽固地保持高位", "commonMeaning": "持续偏高"},
+            ],
+            "familiarButShiftedWords": [
+                {"word": "modest", "lemma": "modest", "meaningInSentence": "有限的、不大的", "commonMeanings": ["谦虚的", "适度的"], "isFamiliarButShifted": True, "note": "财经语境里常用来表示幅度不大。"}
+            ],
+            "longSentences": [
+                {
+                    "sentenceId": "sentence_2",
+                    "text": "Although consumer spending remained resilient, smaller manufacturers began to come under pressure as borrowing costs stayed stubbornly high.",
+                    "reason": "包含让步状语和原因状语，主干容易被前后信息遮住。",
+                }
+            ],
+            "summary": "这篇练习文章关注小企业在需求有限回暖和融资成本高企之间受到的压力。",
+        },
+    }
