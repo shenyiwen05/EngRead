@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import OperationalError, ProgrammingError
 
 from app import models  # noqa: F401
+from app.config import settings
 from app.database import SessionLocal
 from app.routers import articles, auth, favorites
 from app.services.article_service import seed_sample_article
@@ -30,7 +31,7 @@ app = FastAPI(title="Context Reader API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5173", "http://localhost:5173"],
+    allow_origins=settings.cors_origin_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
