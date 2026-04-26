@@ -199,6 +199,34 @@ def test_parse_ai_analysis_fills_breakdown_defaults_for_partial_model_output():
     assert breakdown["explanation"] == ""
 
 
+def test_parse_ai_analysis_fills_phrase_meaning_from_common_meaning():
+    payload = valid_analysis_payload()
+    phrase = payload["paragraphs"][0]["sentences"][0]["phrases"][0]
+    phrase.pop("meaningInSentence")
+    phrase["commonMeaning"] = "承受压力"
+
+    parsed = parse_ai_analysis(payload)
+    parsed_phrase = parsed["paragraphs"][0]["sentences"][0]["phrases"][0]
+
+    assert parsed_phrase["meaningInSentence"] == "承受压力"
+
+
+def test_parse_ai_analysis_drops_breakdown_without_substantive_content():
+    payload = valid_analysis_payload()
+    sentence = payload["paragraphs"][0]["sentences"][0]
+    sentence["isLongSentence"] = True
+    sentence["breakdown"] = {
+        "mainClause": "Small firms come under pressure",
+        "logic": "",
+        "explanation": "",
+        "modifiers": [],
+    }
+
+    parsed = parse_ai_analysis(payload)
+
+    assert "breakdown" not in parsed["paragraphs"][0]["sentences"][0]
+
+
 def test_parse_ai_analysis_drops_non_array_phrase_collocations():
     payload = valid_analysis_payload()
     phrase = payload["paragraphs"][0]["sentences"][0]["phrases"][0]

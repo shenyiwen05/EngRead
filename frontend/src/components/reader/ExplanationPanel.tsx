@@ -11,6 +11,10 @@ function stringList(value: unknown) {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : []
 }
 
+function textValue(value: unknown) {
+  return typeof value === 'string' ? value.trim() : ''
+}
+
 function selectionId(selection: NonNullable<SelectedExplanation>) {
   if (selection.type === 'word') {
     return selection.data.word || selection.data.lemma || selection.data.meaningInSentence || 'word'
@@ -36,6 +40,14 @@ export function ExplanationPanel({ articleId, selection }: ExplanationPanelProps
   const saved = Boolean(favoriteFor(articleId, selection.type, itemId))
   const phraseCollocations = selection.type === 'phrase' ? stringList(selection.data.collocations) : []
   const wordCommonMeanings = selection.type === 'word' ? stringList(selection.data.commonMeanings) : []
+  const phraseMeaning = selection.type === 'phrase' ? textValue(selection.data.meaningInSentence) : ''
+  const phraseCommonMeaning = selection.type === 'phrase' ? textValue(selection.data.commonMeaning) : ''
+  const phraseWhyImportant = selection.type === 'phrase' ? textValue(selection.data.whyImportant) : ''
+  const sentenceBreakdown = selection.type === 'sentence' ? selection.data.breakdown : null
+  const sentenceMainClause = textValue(sentenceBreakdown?.mainClause)
+  const sentenceModifiers = sentenceBreakdown ? stringList(sentenceBreakdown.modifiers) : []
+  const sentenceLogic = textValue(sentenceBreakdown?.logic)
+  const sentenceExplanation = textValue(sentenceBreakdown?.explanation)
 
   return (
     <aside className="reader-explanation">
@@ -68,10 +80,11 @@ export function ExplanationPanel({ articleId, selection }: ExplanationPanelProps
       </div>
       {selection.type === 'phrase' ? (
         <div className="mt-4 space-y-3 text-sm leading-7 text-gray-700">
-          <p>本句义：{selection.data.meaningInSentence}</p>
-          {selection.data.commonMeaning ? <p>常见义：{selection.data.commonMeaning}</p> : null}
-          {selection.data.whyImportant ? <p>为什么重要：{selection.data.whyImportant}</p> : null}
+          {phraseMeaning ? <p>本句义：{phraseMeaning}</p> : null}
+          {phraseCommonMeaning ? <p>常见义：{phraseCommonMeaning}</p> : null}
+          {phraseWhyImportant ? <p>为什么重要：{phraseWhyImportant}</p> : null}
           {phraseCollocations.length ? <p>搭配：{phraseCollocations.join('；')}</p> : null}
+          {!phraseMeaning && !phraseCommonMeaning && !phraseWhyImportant && !phraseCollocations.length ? <p>释义暂未生成。</p> : null}
         </div>
       ) : null}
       {selection.type === 'word' ? (
@@ -81,11 +94,12 @@ export function ExplanationPanel({ articleId, selection }: ExplanationPanelProps
           {selection.data.note ? <p>提示：{selection.data.note}</p> : null}
         </div>
       ) : null}
-      {selection.type === 'sentence' && selection.data.breakdown ? (
+      {selection.type === 'sentence' && sentenceBreakdown ? (
         <div className="mt-4 space-y-3 text-sm leading-7 text-gray-700">
-          <p>主干：{selection.data.breakdown.mainClause}</p>
-          <p>逻辑：{selection.data.breakdown.logic}</p>
-          <p>理解提示：{selection.data.breakdown.explanation}</p>
+          {sentenceMainClause ? <p>主干：{sentenceMainClause}</p> : null}
+          {sentenceModifiers.length ? <p>修饰信息：{sentenceModifiers.join('；')}</p> : null}
+          {sentenceLogic ? <p>句子逻辑：{sentenceLogic}</p> : null}
+          {sentenceExplanation ? <p>阅读提示：{sentenceExplanation}</p> : null}
         </div>
       ) : null}
     </aside>

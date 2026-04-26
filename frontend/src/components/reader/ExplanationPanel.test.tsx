@@ -62,4 +62,23 @@ describe('ExplanationPanel', () => {
     expect(screen.getByText('本句义：拖累增长')).toBeInTheDocument()
     expect(screen.queryByText(/^搭配：/)).not.toBeInTheDocument()
   })
+
+  it('does not render an empty phrase meaning row when meaningInSentence is missing', () => {
+    const selection = {
+      type: 'phrase',
+      data: {
+        id: 'phrase_2',
+        text: 'in power',
+        start: 0,
+        end: 8,
+        type: 'academic_expression',
+        commonMeaning: '执政时',
+      },
+    } as unknown as SelectedExplanation
+
+    render(<ExplanationPanel articleId="article_1" selection={selection} />)
+
+    expect(screen.queryByText('本句义：')).not.toBeInTheDocument()
+    expect(screen.getByText('常见义：执政时')).toBeInTheDocument()
+  })
 })

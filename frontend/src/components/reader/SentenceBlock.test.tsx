@@ -86,14 +86,15 @@ describe('SentenceBlock', () => {
     render(<SentenceBlock sentence={longSentence} onSelect={onSelect} />)
     await user.click(screen.getByRole('button', { name: '拆解' }))
 
-    expect(screen.getByText('mainClause')).toBeInTheDocument()
+    expect(screen.getByText('主干')).toBeInTheDocument()
     expect(screen.getByText(longSentence.breakdown!.mainClause)).toBeInTheDocument()
-    expect(screen.getByText('modifiers')).toBeInTheDocument()
+    expect(screen.getByText('修饰信息')).toBeInTheDocument()
     expect(screen.getByText(longSentence.breakdown!.modifiers[0])).toBeInTheDocument()
-    expect(screen.getByText('logic')).toBeInTheDocument()
+    expect(screen.getByText('句子逻辑')).toBeInTheDocument()
     expect(screen.getByText(longSentence.breakdown!.logic)).toBeInTheDocument()
-    expect(screen.getByText('explanation')).toBeInTheDocument()
+    expect(screen.getByText('阅读提示')).toBeInTheDocument()
     expect(screen.getByText(longSentence.breakdown!.explanation)).toBeInTheDocument()
+    expect(screen.queryByText('mainClause')).not.toBeInTheDocument()
   })
 
   it('opens an AI breakdown that omits modifiers without crashing', async () => {
@@ -111,8 +112,8 @@ describe('SentenceBlock', () => {
     render(<SentenceBlock sentence={aiSentence} onSelect={onSelect} />)
     await user.click(screen.getByRole('button', { name: '拆解' }))
 
-    expect(screen.getByText('mainClause')).toBeInTheDocument()
-    expect(screen.getByText('modifiers')).toBeInTheDocument()
+    expect(screen.getByText('主干')).toBeInTheDocument()
+    expect(screen.queryByText('修饰信息')).not.toBeInTheDocument()
     expect(screen.queryByText(longSentence.breakdown!.modifiers[0])).not.toBeInTheDocument()
   })
 })

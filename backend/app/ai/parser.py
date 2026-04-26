@@ -77,6 +77,20 @@ def _normalize_sentence_items(sentence: dict[str, Any], paragraph_index: int, se
 
 
 def _normalize_phrase(phrase: dict[str, Any]) -> None:
+    for key in ("meaningInSentence", "commonMeaning", "whyImportant", "sentenceTranslation"):
+        value = phrase.get(key)
+        if isinstance(value, str):
+            cleaned = value.strip()
+            if cleaned:
+                phrase[key] = cleaned
+            else:
+                phrase.pop(key, None)
+        elif value is not None:
+            phrase.pop(key, None)
+
+    if "meaningInSentence" not in phrase and isinstance(phrase.get("commonMeaning"), str):
+        phrase["meaningInSentence"] = phrase["commonMeaning"]
+
     collocations = phrase.get("collocations")
     if collocations is None:
         return
@@ -84,7 +98,7 @@ def _normalize_phrase(phrase: dict[str, Any]) -> None:
         phrase.pop("collocations", None)
         return
 
-    phrase["collocations"] = [item for item in collocations if isinstance(item, str)]
+    phrase["collocations"] = [item.strip() for item in collocations if isinstance(item, str) and item.strip()]
 
 
 def _normalize_token_explanation(token: dict[str, Any]) -> None:
@@ -106,14 +120,18 @@ def _normalize_sentence_breakdown(sentence: dict[str, Any]) -> None:
         return
 
     for key in ("mainClause", "logic", "explanation"):
-        if not isinstance(breakdown.get(key), str):
-            breakdown[key] = ""
+        value = breakdown.get(key)
+        breakdown[key] = value.strip() if isinstance(value, str) else ""
 
     modifiers = breakdown.get("modifiers")
     if isinstance(modifiers, list):
-        breakdown["modifiers"] = [item for item in modifiers if isinstance(item, str)]
+        breakdown["modifiers"] = [item.strip() for item in modifiers if isinstance(item, str) and item.strip()]
     else:
         breakdown["modifiers"] = []
+
+    has_supporting_detail = bool(breakdown["modifiers"] or breakdown["logic"] or breakdown["explanation"])
+    if not breakdown["mainClause"] or not has_supporting_detail:
+        sentence.pop("breakdown", None)
 
 
 def _repair_sentence_spans(sentence: dict[str, Any]) -> None:

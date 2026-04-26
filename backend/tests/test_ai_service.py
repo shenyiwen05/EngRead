@@ -35,6 +35,10 @@ def test_build_analysis_messages_enforce_structured_reader_contract():
     assert "省略空数组之外的空字段" in content
     assert "不超过 20 个汉字" in content
     assert "阅读、点击、展开时不得再次调用 AI" in content
+    assert "phrase 必须提供 meaningInSentence" in content
+    assert "不要只给词组字面意思或留空" in content
+    assert "只有当主干、修饰信息、逻辑、阅读提示都能写出实质内容时才输出 breakdown" in content
+    assert "不要输出 mainClause 这类英文字段名解释用户" in content
 
 
 def test_analyze_article_text_selects_deepseek_provider(monkeypatch):

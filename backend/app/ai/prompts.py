@@ -20,20 +20,27 @@ def build_analysis_messages(raw_text: str, title: str | None = None) -> list[Cha
 - 每个 sentence 必须包含 text、translation、isLongSentence、tokens、phrases。
 - token 的 start/end 与 phrase 的 start/end 必须是 sentence.text 内的字符位置。
 - tokens 只为可点击的重点词、熟词生义词、词组内单词生成；不要为每个普通单词生成 token。
-- 普通重点词 token 必须包含 explanation，并设置 isClickable=true。
-- 词组内每个 token 必须设置 phraseId，并设置 isClickable=true。
-- 可点击学习点采用中等密度：每 100 个英文词目标提供 6 到 10 个可点击学习点。
-- 每个自然段通常提供 4 到 8 个可点击学习点；短段可以少一些，但不要整段只有 1 个可点击点。
-- 每个句子通常选择 1 个词组或搭配，再选择 1 个重点词；信息量高的句子可以选择 1 个词组和 2 个重点词。
-- 学习点优先级：词组搭配、固定表达、短语动词、学术表达；熟词生义；外刊高频动词、名词、形容词；影响理解的抽象词；主题相关表达。
-- 不要为冠词、普通代词、普通介词、非常基础且无语境价值的词生成 token。
-- 普通重点词 explanation 的 meaningInSentence 不超过 20 个汉字，note 不超过 24 个汉字。
-- 如果 token 属于词组，设置 phraseId，并且 phraseId 必须指向同一句里的 phrases.id。
-- 识别词组、熟词生义、长句拆解，但不要编造原文中不存在的词组或解释。
-- 只有真正的长句才生成 breakdown；普通句子不要生成 breakdown。
-- 解释面向中文学习者，保持简洁，不要写课堂式长篇讲解。
-- review 必须包含 keyPhrases、familiarButShiftedWords、longSentences、summary。
-- 省略空数组之外的空字段；不要输出 null、空字符串、无内容的 breakdown。
+        - 普通重点词 token 必须包含 explanation，并设置 isClickable=true。
+        - 词组内每个 token 必须设置 phraseId，并设置 isClickable=true。
+        - phrases 中每个 phrase 必须包含 id、text、start、end、type、meaningInSentence。
+        - phrase 必须提供 meaningInSentence，写出该词组在本句中的中文意思；不要只给词组字面意思或留空。
+        - 只有当词组常见义和本句义明显不同时，才额外提供 commonMeaning。
+        - whyImportant 只在确实能帮助理解时提供，说明它为什么值得学，不要写空话。
+        - 可点击学习点采用中等密度：每 100 个英文词目标提供 6 到 10 个可点击学习点。
+        - 每个自然段通常提供 4 到 8 个可点击学习点；短段可以少一些，但不要整段只有 1 个可点击点。
+        - 每个句子通常选择 1 个词组或搭配，再选择 1 个重点词；信息量高的句子可以选择 1 个词组和 2 个重点词。
+        - 学习点优先级：词组搭配、固定表达、短语动词、学术表达；熟词生义；外刊高频动词、名词、形容词；影响理解的抽象词；主题相关表达。
+        - 不要为冠词、普通代词、普通介词、非常基础且无语境价值的词生成 token。
+        - 普通重点词 explanation 的 meaningInSentence 不超过 20 个汉字，note 不超过 24 个汉字。
+        - 如果 token 属于词组，设置 phraseId，并且 phraseId 必须指向同一句里的 phrases.id。
+        - 识别词组、熟词生义、长句拆解，但不要编造原文中不存在的词组或解释。
+        - 只有真正的长句才生成 breakdown；普通句子不要生成 breakdown。
+        - breakdown 必须帮助中文学习者读懂句子：mainClause 写英文主干，modifiers 写关键修饰/插入信息，logic 写中文逻辑，explanation 写阅读顺序或理解提示。
+        - 只有当主干、修饰信息、逻辑、阅读提示都能写出实质内容时才输出 breakdown；如果只能写出一句主干或空泛套话，就不要输出 breakdown。
+        - 不要输出 mainClause 这类英文字段名解释用户；字段值本身必须是内容，不是“mainClause: ...”这种标签式文本。
+        - 解释面向中文学习者，保持简洁，不要写课堂式长篇讲解。
+        - review 必须包含 keyPhrases、familiarButShiftedWords、longSentences、summary。
+        - 省略空数组之外的空字段；不要输出 null、空字符串、无内容的 breakdown。
 - AI 只在导入文章分析时调用一次；阅读、点击、展开时不得再次调用 AI，因此 JSON 必须足够完整，可直接缓存。
 
 JSON 形状：
