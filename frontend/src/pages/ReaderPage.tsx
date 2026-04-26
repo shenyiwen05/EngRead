@@ -3,8 +3,10 @@ import { Link, useParams } from 'react-router-dom'
 import { AppLayout } from '../components/layout/AppLayout'
 import { ReaderLayout } from '../components/reader/ReaderLayout'
 import { getAnalysisStatus, getArticle } from '../services/articleService'
+import { generateKaoyanTraining } from '../services/trainingService'
 import { useFavoriteStore } from '../stores/favoriteStore'
 import type { Article, SelectedExplanation } from '../types/article'
+import type { TrainingQuestion, TrainingSet } from '../types/training'
 
 export function ReaderPage() {
   const { articleId } = useParams()
@@ -12,6 +14,10 @@ export function ReaderPage() {
   const [article, setArticle] = useState<Article | null>(null)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  const [trainingSet, setTrainingSet] = useState<TrainingSet | null>(null)
+  const [isGeneratingTraining, setIsGeneratingTraining] = useState(false)
+  const [trainingError, setTrainingError] = useState('')
+  const [activeTrainingQuestion, setActiveTrainingQuestion] = useState<TrainingQuestion | null>(null)
   const loadFavorites = useFavoriteStore((state) => state.loadFavorites)
 
   useEffect(() => {
@@ -26,6 +32,8 @@ export function ReaderPage() {
     getArticle(articleId)
       .then((loadedArticle) => {
         setArticle(loadedArticle)
+        setTrainingSet(null)
+        setActiveTrainingQuestion(null)
         setNotice('')
       })
       .catch((requestError) => setError(requestError instanceof Error ? requestError.message : '文章加载失败'))
@@ -93,6 +101,24 @@ export function ReaderPage() {
     )
   }
 
+  async function handleGenerateTraining() {
+    if (!articleId) {
+      return
+    }
+
+    setIsGeneratingTraining(true)
+    setTrainingError('')
+    try {
+      const generated = await generateKaoyanTraining(articleId, Boolean(trainingSet))
+      setTrainingSet(generated)
+      setActiveTrainingQuestion(null)
+    } catch (requestError) {
+      setTrainingError(requestError instanceof Error ? requestError.message : '考研训练题生成失败')
+    } finally {
+      setIsGeneratingTraining(false)
+    }
+  }
+
   return (
     <AppLayout>
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-gray-100 pb-5">
@@ -117,7 +143,17 @@ export function ReaderPage() {
         </p>
       ) : null}
       {notice ? <p className="mb-4 rounded-md border border-teal-100 bg-white px-4 py-3 text-sm text-teal-800">{notice}</p> : null}
-      <ReaderLayout article={article} selection={selection} onSelect={setSelection} />
+      <ReaderLayout
+        activeTrainingQuestion={activeTrainingQuestion}
+        article={article}
+        isGeneratingTraining={isGeneratingTraining}
+        onActiveTrainingQuestionChange={setActiveTrainingQuestion}
+        onGenerateTraining={handleGenerateTraining}
+        onSelect={setSelection}
+        selection={selection}
+        trainingError={trainingError}
+        trainingSet={trainingSet}
+      />
     </AppLayout>
   )
 }

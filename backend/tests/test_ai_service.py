@@ -70,3 +70,43 @@ def test_analyze_article_text_requires_api_key(monkeypatch):
 
     with pytest.raises(RuntimeError, match="AI_API_KEY"):
         ai_service.analyze_article_text("Small firms come under pressure.")
+
+
+class FakeTrainingProvider:
+    def generate_json(self, messages):
+        assert any("考研阅读命题人" in message["content"] for message in messages)
+        return {
+            "questions": [
+                {
+                    "id": "q1",
+                    "order": 1,
+                    "questionType": "detail",
+                    "testedAbility": "detail_location",
+                    "stem": "What is suggested?",
+                    "options": [
+                        {"label": "A", "text": "Correct", "sourceSentenceIds": ["s1"], "role": "correct_evidence"},
+                        {"label": "B", "text": "Wrong", "sourceSentenceIds": ["s2"], "role": "distractor_evidence"},
+                        {"label": "C", "text": "Unsupported", "sourceSentenceIds": [], "role": "unsupported"},
+                        {"label": "D", "text": "Wrong again", "sourceSentenceIds": ["s3"], "role": "distractor_evidence"},
+                    ],
+                    "answer": "A",
+                    "sourceSentenceIds": ["s1"],
+                    "explanation": "定位第 1 句。",
+                    "trapAnalysis": {"B": "偷换概念", "C": "原文未支持", "D": "扩大范围"},
+                }
+            ]
+        }
+
+
+def test_generate_kaoyan_training_uses_training_prompt(monkeypatch):
+    monkeypatch.setattr(ai_service, "get_analysis_provider", lambda: FakeTrainingProvider())
+    article = {
+        "title": "Market Pressure",
+        "paragraphs": [
+            {"id": "p1", "sentences": [{"id": "s1", "text": "Firms are under pressure.", "translation": "企业承压。"}]},
+        ],
+    }
+
+    result = ai_service.generate_kaoyan_training(article)
+
+    assert result["questions"][0]["questionType"] == "detail"

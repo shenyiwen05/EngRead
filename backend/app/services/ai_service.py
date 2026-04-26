@@ -1,6 +1,7 @@
 from typing import Any
 
 from app.config import settings
+from app.ai.training_prompts import build_kaoyan_training_messages
 from app.ai.providers.base import AnalysisProvider
 from app.ai.providers.deepseek_provider import DeepSeekProvider
 from app.ai.providers.qwen_provider import QwenProvider
@@ -28,3 +29,8 @@ def get_analysis_provider() -> AnalysisProvider:
 
 def analyze_article_text(raw_text: str, title: str | None = None) -> dict[str, Any]:
     return get_analysis_provider().analyze_article(raw_text, title=title)
+
+
+def generate_kaoyan_training(article: dict[str, Any]) -> dict[str, Any]:
+    messages = build_kaoyan_training_messages(article)
+    return get_analysis_provider().generate_json(messages)

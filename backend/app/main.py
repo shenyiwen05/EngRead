@@ -8,7 +8,7 @@ from sqlalchemy.exc import OperationalError, ProgrammingError
 from app import models  # noqa: F401
 from app.config import settings
 from app.database import SessionLocal
-from app.routers import articles, auth, favorites
+from app.routers import articles, auth, favorites, training
 from app.services.article_service import seed_sample_article
 
 def initialize_database() -> None:
@@ -40,6 +40,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(articles.router)
 app.include_router(favorites.router)
+app.include_router(training.router)
 
 
 @app.get("/health")
