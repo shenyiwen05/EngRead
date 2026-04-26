@@ -2,12 +2,17 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getAnalysisStatus, getArticle } from '../services/articleService'
+import { generateKaoyanTraining } from '../services/trainingService'
 import type { Article } from '../types/article'
 import { ReaderPage } from './ReaderPage'
 
 vi.mock('../services/articleService', () => ({
   getArticle: vi.fn(),
   getAnalysisStatus: vi.fn(),
+}))
+
+vi.mock('../services/trainingService', () => ({
+  generateKaoyanTraining: vi.fn(),
 }))
 
 const draftArticle: Article = {
@@ -74,6 +79,7 @@ describe('ReaderPage', () => {
   beforeEach(() => {
     vi.mocked(getArticle).mockReset()
     vi.mocked(getAnalysisStatus).mockReset()
+    vi.mocked(generateKaoyanTraining).mockReset()
   })
 
   it('shows the draft article while analysis runs and refreshes when analysis is ready', async () => {
@@ -91,5 +97,13 @@ describe('ReaderPage', () => {
       expect(getArticle).toHaveBeenCalledTimes(2)
       expect(screen.queryByText(/AI 正在分析这篇文章/)).not.toBeInTheDocument()
     }, { timeout: 3500 })
+  })
+
+  it('shows Kaoyan training entry on the reader page', async () => {
+    vi.mocked(getArticle).mockResolvedValueOnce(readyArticle)
+
+    renderReaderPage()
+
+    expect(await screen.findByRole('button', { name: '生成考研训练题' })).toBeInTheDocument()
   })
 })
